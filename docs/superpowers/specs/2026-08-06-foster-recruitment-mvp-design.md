@@ -27,7 +27,7 @@ Success criteria: useful to a non-data-expert; strong visual design that serves 
 ### In scope (MVP)
 
 1. **Statewide Recruitment Priorities page** (`/`)
-   - Shared age control: `All ages · 0–5 · 6–12 · 13–17` + "Exact age…" dropdown (0–17). Drives everything on the page. Selection stored in URL (`?age=13-17`, `?age=16`) so links are shareable and state persists across navigation. Children still in care at age 18+ (possible, since `most_recent_age` advances over time) appear in "All ages" and in the age-by-age chart, but not in the exact-age selector — provider preferences cap at 18 and recruitment targets the 0–17 pipeline.
+   - Shared age control: `All ages · 0–5 · 6–12 · 13–17` + "Exact age…" dropdown (0–17). Drives everything on the page. Selection stored in URL (`?age=13-17`, `?age=16`) so links are shareable and state persists across navigation. Child ages in the data run 0–17 (verified: `most_recent_age` caps at 17, including for children still in care), so the selector covers every child.
    - Illinois county choropleth shaded by recruitment pressure for the selected age(s); click → county page.
    - Ranked county table: children in care, age-compatible active homes, pressure ratio, out-of-county foster placement rate, one-line plain-language reason. Sortable; default sort by pressure.
    - Statewide summary strip: total children in care, active licensed homes, statewide out-of-county rate.
