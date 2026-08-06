@@ -22,7 +22,7 @@
 - Copy rules (verbatim, everywhere): say "homes accepting this age" / "age-compatible homes"; **never** "available homes", "open beds", or "shortage of exactly N". Out-of-county is a "pressure signal", never "adverse".
 - Diagnostic verdicts are comparative, never absolute; always display the statewide baselines being compared against.
 - All interactive state lives in the URL (`?age=all|0-5|6-12|13-17|0..17`; absent = all).
-- Known reconciliation totals (assert in tests): 6,062 providers · 16,138 children · 51,993 placements · 8,071 children in care at snapshot · 32,859 foster_home placements · 102 counties.
+- Known reconciliation totals (assert in tests): 6,063 providers · 16,139 children · 51,994 placements · 8,071 children in care at snapshot · 32,859 foster_home placements · 102 counties. (Corrected during Task 8: the raw CSVs have no trailing newline, so earlier `wc -l`-derived counts were each one short.)
 - Deadline: site + repo frozen 11:59pm EDT Sunday Aug 9, 2026. Deploy (Task 18) must complete no later than Aug 9 afternoon.
 - Test commands: `npm test` (vitest run). ETL: `npm run etl`. Map prep: `npm run prep-map`.
 
@@ -1046,7 +1046,7 @@ const derived = buildDerived(providersCsv, childrenCsv, placementsCsv);
 
 describe("reconciliation against raw data", () => {
   test("raw row counts match known totals", () => {
-    expect(derived.meta.counts).toEqual({ providers: 6062, children: 16138, placements: 51993 });
+    expect(derived.meta.counts).toEqual({ providers: 6063, children: 16139, placements: 51994 });
   });
 
   test("exactly 102 counties, unique names and slugs, sorted by name", () => {
@@ -2934,7 +2934,7 @@ Product and technical decisions, in the order they were made.
     react-simple-maps' peer deps cap at React 18, and a hand-rolled SVG choropleth is
     ~80 lines with full control over focus/ARIA behavior.
 20. **Vitest with TDD on every metric** plus reconciliation tests pinning known totals
-    (6,062 providers · 16,138 children · 51,993 placements · 8,071 in care · 102
+    (6,063 providers · 16,139 children · 51,994 placements · 8,071 in care · 102
     counties) and a map-join test guaranteeing every county matches a map feature.
 21. **Verdict/reason are pure functions evaluated per age selection** at render time —
     they can't be precomputed because the median-based thresholds depend on the
