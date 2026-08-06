@@ -80,7 +80,7 @@ Success criteria: useful to a non-data-expert; strong visual design that serves 
 
 Rationale: the dataset is a fixed extract (Jan 2022 – Jul 2026); after aggregation the entire app payload is a few hundred KB. A runtime database adds deploy risk and zero functional value. The ETL boundary is where a live feed would slot in later — this is the interview answer, not a concession.
 
-- **Stack:** Next.js (App Router) + TypeScript + Tailwind CSS. Recharts for charts (accessibility layer enabled). `react-simple-maps` + US-atlas TopoJSON for the Illinois choropleth. Vitest for tests. GitHub + Vercel.
+- **Stack:** Next.js 16 (App Router) + TypeScript + Tailwind CSS. Recharts 3 for charts (accessibility layer enabled; React 19-compatible). Illinois choropleth built directly with `d3-geo` + `topojson-client` (US-atlas TopoJSON source) rendered as React SVG — `react-simple-maps` was ruled out because its peer deps cap at React 18. Vitest for tests. GitHub + Vercel.
 - **ETL (`etl/`):** pure, individually-testable metric functions + a runner (`npm run etl`). Reads `data/raw/*.csv`, writes `data/derived/`:
   - `counties.json` — per county: children-by-age, compatible-homes-by-age, out-of-county-by-age, top out-of-county destination counties (all ages), activity %, monthly trends
   - `statewide.json` — statewide aggregates and trend series
