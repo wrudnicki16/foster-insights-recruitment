@@ -114,10 +114,11 @@ export function activityByCounty(providers: ProviderRow[]): Map<string, { active
 function trend<T>(items: T[], county: (t: T) => string, date: (t: T) => Date): Map<string, Record<string, number>> {
   const out = new Map<string, Record<string, number>>();
   for (const item of items) {
-    const entry = out.get(county(item)) ?? {};
+    const c = county(item);
+    const entry = out.get(c) ?? {};
     const key = monthKey(date(item));
     entry[key] = (entry[key] ?? 0) + 1;
-    out.set(county(item), entry);
+    out.set(c, entry);
   }
   return out;
 }
