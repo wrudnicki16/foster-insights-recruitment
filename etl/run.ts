@@ -1,6 +1,5 @@
 import { readFileSync, mkdirSync, writeFileSync } from "node:fs";
-import { ChildRow } from "./load";
-import { loadChildren, loadPlacements, loadProviders } from "./load";
+import { type ChildRow, loadChildren, loadPlacements, loadProviders } from "./load";
 import {
   activityByCounty, childrenInCare, homesByCounty, licenseTrendByCounty,
   monthAxis, outOfCounty, removalTrendByCounty,
