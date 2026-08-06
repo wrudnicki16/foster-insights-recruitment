@@ -1,4 +1,5 @@
-import { ChildRow, ProviderRow } from "./load";
+import { ChildRow, ProviderRow, PlacementRow } from "./load";
+import { wholeYearsBetween } from "./parse";
 
 export interface ChildrenByCounty {
   byAge: number[];
@@ -56,6 +57,45 @@ export function homesByCounty(providers: ProviderRow[], snapshot: Date): Map<str
       if (p.minAge <= hi && p.maxAge >= lo) entry.byBand[band] += 1;
     }
     out.set(p.county, entry);
+  }
+  return out;
+}
+
+export interface OocByCounty {
+  outByAge: number[];
+  totalByAge: number[];
+  outAll: number;
+  totalAll: number;
+  destinations: Map<string, number>;
+}
+
+export function outOfCounty(
+  placements: PlacementRow[],
+  childById: Map<string, ChildRow>,
+): Map<string, OocByCounty> {
+  const out = new Map<string, OocByCounty>();
+  for (const pl of placements) {
+    if (pl.resourceType !== "foster_home") continue;
+    const entry = out.get(pl.removalCounty) ?? {
+      outByAge: Array(18).fill(0),
+      totalByAge: Array(18).fill(0),
+      outAll: 0,
+      totalAll: 0,
+      destinations: new Map<string, number>(),
+    };
+    const isOut = pl.placementCounty !== pl.removalCounty;
+    entry.totalAll += 1;
+    if (isOut) {
+      entry.outAll += 1;
+      entry.destinations.set(pl.placementCounty, (entry.destinations.get(pl.placementCounty) ?? 0) + 1);
+    }
+    const c = childById.get(pl.childId);
+    const age = c && c.ageAtRemoval !== null ? c.ageAtRemoval + wholeYearsBetween(c.removalDate, pl.start) : null;
+    if (age !== null && age >= 0 && age <= 17) {
+      entry.totalByAge[age] += 1;
+      if (isOut) entry.outByAge[age] += 1;
+    }
+    out.set(pl.removalCounty, entry);
   }
   return out;
 }

@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
-import { ChildRow, ProviderRow } from "./load";
-import { childrenInCare, homesByCounty, isActive } from "./metrics";
+import { ChildRow, ProviderRow, PlacementRow } from "./load";
+import { childrenInCare, homesByCounty, isActive, outOfCounty } from "./metrics";
 
 const d = (s: string) => new Date(s + "T00:00:00Z");
 
@@ -65,5 +65,36 @@ describe("homesByCounty", () => {
     expect(adams.byBand["6-12"]).toBe(1); // b
     expect(adams.byBand["13-17"]).toBe(1); // c
     expect(out.get("Bond")!.all).toBe(1);
+  });
+});
+
+function placement(over: Partial<PlacementRow>): PlacementRow {
+  return {
+    childId: "1", start: d("2024-06-01"), end: null, resourceType: "foster_home",
+    index: 1, removalCounty: "Adams", placementCounty: "Adams", providerId: "p", length: 10, ...over,
+  };
+}
+
+describe("outOfCounty", () => {
+  const kids = new Map([
+    ["1", child({ id: "1", ageAtRemoval: 5, removalDate: d("2024-01-01") })],
+    ["2", child({ id: "2", ageAtRemoval: null })],
+  ]);
+
+  test("counts foster_home placements in/out with derived age", () => {
+    const out = outOfCounty([
+      placement({ childId: "1", placementCounty: "Adams" }),                       // in-county, age 5
+      placement({ childId: "1", placementCounty: "Bond", start: d("2025-06-01") }), // out, age 6 (1 anniversary passed)
+      placement({ childId: "1", placementCounty: "Cook", resourceType: "kin" }),    // kin - ignored
+      placement({ childId: "2", placementCounty: "Bond" }),                         // out, NA age
+    ], kids);
+    const adams = out.get("Adams")!;
+    expect(adams.totalAll).toBe(3);
+    expect(adams.outAll).toBe(2);
+    expect(adams.totalByAge[5]).toBe(1);
+    expect(adams.outByAge[6]).toBe(1);
+    expect(adams.totalByAge.reduce((a, b) => a + b, 0)).toBe(2); // NA-age excluded from byAge
+    expect(adams.destinations.get("Bond")).toBe(2);
+    expect(adams.destinations.has("Adams")).toBe(false);
   });
 });
