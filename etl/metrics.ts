@@ -1,5 +1,5 @@
 import { ChildRow, ProviderRow, PlacementRow } from "./load";
-import { wholeYearsBetween } from "./parse";
+import { monthKey, wholeYearsBetween } from "./parse";
 
 export interface ChildrenByCounty {
   byAge: number[];
@@ -98,4 +98,47 @@ export function outOfCounty(
     out.set(pl.removalCounty, entry);
   }
   return out;
+}
+
+export function activityByCounty(providers: ProviderRow[]): Map<string, { activeDays: number; licensedDays: number }> {
+  const out = new Map<string, { activeDays: number; licensedDays: number }>();
+  for (const p of providers) {
+    const entry = out.get(p.county) ?? { activeDays: 0, licensedDays: 0 };
+    entry.activeDays += p.daysActive;
+    entry.licensedDays += p.daysLicensed;
+    out.set(p.county, entry);
+  }
+  return out;
+}
+
+function trend<T>(items: T[], county: (t: T) => string, date: (t: T) => Date): Map<string, Record<string, number>> {
+  const out = new Map<string, Record<string, number>>();
+  for (const item of items) {
+    const entry = out.get(county(item)) ?? {};
+    const key = monthKey(date(item));
+    entry[key] = (entry[key] ?? 0) + 1;
+    out.set(county(item), entry);
+  }
+  return out;
+}
+
+export function licenseTrendByCounty(providers: ProviderRow[]): Map<string, Record<string, number>> {
+  return trend(providers, (p) => p.county, (p) => p.licenseStart);
+}
+
+export function removalTrendByCounty(children: ChildRow[]): Map<string, Record<string, number>> {
+  return trend(children, (c) => c.county, (c) => c.removalDate);
+}
+
+export function monthAxis(startYm: string, endYm: string): string[] {
+  const [sy, sm] = startYm.split("-").map(Number);
+  const [ey, em] = endYm.split("-").map(Number);
+  const res: string[] = [];
+  let y = sy;
+  let m = sm;
+  while (y < ey || (y === ey && m <= em)) {
+    res.push(`${y}-${String(m).padStart(2, "0")}`);
+    if (m === 12) { y += 1; m = 1; } else { m += 1; }
+  }
+  return res;
 }

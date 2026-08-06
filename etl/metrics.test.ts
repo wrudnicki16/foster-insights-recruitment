@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { ChildRow, ProviderRow, PlacementRow } from "./load";
-import { childrenInCare, homesByCounty, isActive, outOfCounty } from "./metrics";
+import { activityByCounty, childrenInCare, homesByCounty, isActive, licenseTrendByCounty, monthAxis, outOfCounty, removalTrendByCounty } from "./metrics";
 
 const d = (s: string) => new Date(s + "T00:00:00Z");
 
@@ -97,4 +97,42 @@ describe("outOfCounty", () => {
     expect(adams.destinations.get("Bond")).toBe(2);
     expect(adams.destinations.has("Adams")).toBe(false);
   });
+});
+
+describe("activityByCounty", () => {
+  test("sums days across all providers regardless of active status", () => {
+    const out = activityByCounty([
+      provider({ daysLicensed: 100, daysActive: 40 }),
+      provider({ daysLicensed: 200, daysActive: 10, licenseEnd: d("2023-01-01") }),
+      provider({ county: "Bond", daysLicensed: 50, daysActive: 50 }),
+    ]);
+    expect(out.get("Adams")).toEqual({ activeDays: 50, licensedDays: 300 });
+    expect(out.get("Bond")).toEqual({ activeDays: 50, licensedDays: 50 });
+  });
+});
+
+test("licenseTrendByCounty buckets by start month", () => {
+  const out = licenseTrendByCounty([
+    provider({ licenseStart: d("2024-03-05") }),
+    provider({ licenseStart: d("2024-03-20") }),
+    provider({ licenseStart: d("2025-01-01") }),
+  ]);
+  expect(out.get("Adams")).toEqual({ "2024-03": 2, "2025-01": 1 });
+});
+
+test("removalTrendByCounty buckets by removal month", () => {
+  const out = removalTrendByCounty([
+    child({ removalDate: d("2022-05-10") }),
+    child({ removalDate: d("2022-05-11"), dischargeDate: d("2023-01-01") }), // discharged still counts as a removal
+  ]);
+  expect(out.get("Adams")).toEqual({ "2022-05": 2 });
+});
+
+test("monthAxis spans inclusive range", () => {
+  const axis = monthAxis("2022-01", "2026-06");
+  expect(axis).toHaveLength(54);
+  expect(axis[0]).toBe("2022-01");
+  expect(axis[53]).toBe("2026-06");
+  expect(axis[11]).toBe("2022-12");
+  expect(axis[12]).toBe("2023-01");
 });
