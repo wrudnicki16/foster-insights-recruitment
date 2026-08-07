@@ -49,7 +49,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
         <thead>
           <tr className="border-b border-slate-200 text-left">
             {COLUMNS.map((col) => (
-              <th key={col.key} className="px-3 py-2">
+              <th key={col.key} className={`px-3 py-2 ${col.numeric ? "text-center" : ""}`}>
                 <button onClick={() => onSort(col.key)} className="font-semibold text-slate-700 hover:text-slate-900">
                   {col.label}
                   {sortKey === col.key ? (desc ? " ↓" : " ↑") : ""}
@@ -70,10 +70,10 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
                   {r.name}
                 </Link>
               </td>
-              <td className="px-3 py-2 tabular-nums">{r.children.toLocaleString("en-US")}</td>
-              <td className="px-3 py-2 tabular-nums">{r.homes.toLocaleString("en-US")}</td>
-              <td className="px-3 py-2 tabular-nums">{r.pressureDisplay}</td>
-              <td className="px-3 py-2 tabular-nums">{r.ooc}</td>
+              <td className="px-3 py-2 text-center tabular-nums">{r.children.toLocaleString("en-US")}</td>
+              <td className="px-3 py-2 text-center tabular-nums">{r.homes.toLocaleString("en-US")}</td>
+              <td className="px-3 py-2 text-center tabular-nums">{r.pressureDisplay}</td>
+              <td className="px-3 py-2 text-center tabular-nums">{r.ooc}</td>
               <td className="px-3 py-2 text-slate-600">{r.reason}</td>
             </tr>
           ))}
