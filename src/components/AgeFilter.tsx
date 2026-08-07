@@ -15,7 +15,7 @@ export default function AgeFilter() {
   const pathname = usePathname();
   const params = useSearchParams();
   const current = ageParamValue(parseAgeParam(params.get("age") ?? undefined));
-  const isExact = /^\d/.test(current);
+  const isExact = /^\d+$/.test(current);
 
   function setAge(value: string) {
     router.replace(value === "all" ? pathname : `${pathname}?age=${value}`, { scroll: false });

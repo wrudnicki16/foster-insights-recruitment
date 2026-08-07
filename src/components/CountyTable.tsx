@@ -70,8 +70,8 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
                   {r.name}
                 </Link>
               </td>
-              <td className="px-3 py-2 tabular-nums">{r.children.toLocaleString()}</td>
-              <td className="px-3 py-2 tabular-nums">{r.homes.toLocaleString()}</td>
+              <td className="px-3 py-2 tabular-nums">{r.children.toLocaleString("en-US")}</td>
+              <td className="px-3 py-2 tabular-nums">{r.homes.toLocaleString("en-US")}</td>
               <td className="px-3 py-2 tabular-nums">{r.pressureDisplay}</td>
               <td className="px-3 py-2 tabular-nums">{r.ooc}</td>
               <td className="px-3 py-2 text-slate-600">{r.reason}</td>
