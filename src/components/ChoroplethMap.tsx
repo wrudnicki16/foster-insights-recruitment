@@ -55,7 +55,7 @@ export default function ChoroplethMap({ items, ageParam, legendTitle }: {
 
   return (
     <figure>
-      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="h-auto w-full max-w-md" role="img"
+      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="h-auto w-full max-w-md" role="group"
         aria-label={`Illinois county map shaded by ${legendTitle}`}>
         {geo.features.map((f) => {
           const item = byKey.get(key((f.properties as { name: string }).name));
