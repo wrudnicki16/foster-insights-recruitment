@@ -49,7 +49,11 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
         <thead>
           <tr className="border-b border-slate-200 text-left">
             {COLUMNS.map((col) => (
-              <th key={col.key} className={`px-3 py-2 ${col.numeric ? "text-center" : ""}`}>
+              <th
+                key={col.key}
+                className={`px-3 py-2 ${col.numeric ? "text-center" : ""}`}
+                aria-sort={sortKey === col.key ? (desc ? "descending" : "ascending") : "none"}
+              >
                 <button onClick={() => onSort(col.key)} className="font-semibold text-slate-700 hover:text-slate-900">
                   {col.label}
                   {sortKey === col.key ? (desc ? " ↓" : " ↑") : ""}

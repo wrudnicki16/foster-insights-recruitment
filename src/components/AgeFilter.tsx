@@ -28,7 +28,7 @@ export default function AgeFilter() {
           key={o.value}
           onClick={() => setAge(o.value)}
           aria-pressed={current === o.value}
-          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors ${
+          className={`rounded-full px-4 py-1.5 text-sm font-medium transition-colors focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-800 ${
             current === o.value
               ? "bg-slate-800 text-white"
               : "bg-slate-100 text-slate-700 hover:bg-slate-200"
