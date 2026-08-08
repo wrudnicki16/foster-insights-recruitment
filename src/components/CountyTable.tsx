@@ -83,7 +83,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
 
   return (
     <div className="space-y-2">
-      <div className="flex items-center justify-between gap-4">
+      <div className="flex h-10 items-center gap-2 lg:sticky lg:top-0 lg:z-20 lg:bg-slate-50">
         <h2 className="text-lg font-semibold">County recruitment priorities</h2>
         <details className="relative" ref={filterRef}>
           <summary
@@ -95,7 +95,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
             </svg>
             {filters.size > 0 ? <span className="text-slate-500">·{filters.size}</span> : null}
           </summary>
-          <div className="absolute right-0 z-20 mt-2 w-64 rounded-md border border-slate-200 bg-white p-3 shadow-lg">
+          <div className="absolute left-0 z-20 mt-2 w-64 rounded-md border border-slate-200 bg-white p-3 shadow-lg">
             <div className="flex items-center justify-between pb-2">
               <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Why</span>
               <button
@@ -131,14 +131,14 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
           Showing {sorted.length} of {rows.length} counties
         </p>
       ) : null}
-      <div className="overflow-x-auto rounded-lg border border-slate-200">
+      <div className="overflow-x-auto lg:overflow-x-visible rounded-lg border border-slate-200">
         <table className="w-full min-w-[720px] bg-white text-sm">
           <thead>
             <tr className="border-b border-slate-200 text-left">
               {COLUMNS.map((col) => (
                 <th
                   key={col.key}
-                  className={`px-3 py-2 ${col.numeric ? "text-center" : ""}`}
+                  className={`px-3 py-2 lg:sticky lg:top-10 lg:z-10 bg-white shadow-[0_1px_0_0_#e2e8f0] ${col.numeric ? "text-center" : ""}`}
                   aria-sort={sortKey === col.key ? (desc ? "descending" : "ascending") : "none"}
                 >
                   <button onClick={() => onSort(col.key)} className="font-semibold text-slate-700 hover:text-slate-900">
@@ -147,7 +147,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
                   </button>
                 </th>
               ))}
-              <th className="px-3 py-2 font-semibold text-slate-700">Why</th>
+              <th className="px-3 py-2 lg:sticky lg:top-10 lg:z-10 bg-white shadow-[0_1px_0_0_#e2e8f0] font-semibold text-slate-700">Why</th>
             </tr>
           </thead>
           <tbody>
