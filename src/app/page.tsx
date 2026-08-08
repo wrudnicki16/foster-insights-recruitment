@@ -1,6 +1,7 @@
 import AgeFilter from "@/components/AgeFilter";
 import ChoroplethMap, { MapItem } from "@/components/ChoroplethMap";
 import CountyTable, { TableRow } from "@/components/CountyTable";
+import { HighlightProvider } from "@/components/HighlightContext";
 import SummaryStrip from "@/components/SummaryStrip";
 import { getCounties, getStatewide } from "@/lib/data";
 import { agesFor, ageParamValue, parseAgeParam, selectionLabel } from "@/lib/selection";
@@ -75,16 +76,18 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
           label={selectionLabel(sel).toLowerCase()}
         />
       </section>
-      <section className="grid grid-cols-1 gap-6 lg:grid-cols-[auto_1fr]">
-        <div className="self-start lg:sticky lg:top-6">
-          <ChoroplethMap
-            items={mapItems}
-            ageParam={ageParamValue(sel)}
-            legendTitle={`Children per age-compatible home (${selectionLabel(sel).toLowerCase()})`}
-          />
-        </div>
-        <CountyTable rows={rows} />
-      </section>
+      <HighlightProvider>
+        <section className="grid grid-cols-1 gap-6 lg:grid-cols-[auto_1fr]">
+          <div className="self-start lg:sticky lg:top-6">
+            <ChoroplethMap
+              items={mapItems}
+              ageParam={ageParamValue(sel)}
+              legendTitle={`Children per age-compatible home (${selectionLabel(sel).toLowerCase()})`}
+            />
+          </div>
+          <CountyTable rows={rows} />
+        </section>
+      </HighlightProvider>
     </div>
   );
 }

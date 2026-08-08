@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useState, useRef, useEffect } from "react";
+import { useHighlight } from "./HighlightContext";
 import { ReasonKind } from "@/lib/verdict";
 
 export interface TableRow {
@@ -41,6 +42,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
   const [desc, setDesc] = useState(true);
   const [filters, setFilters] = useState<Set<string>>(new Set());
   const filterRef = useRef<HTMLDetailsElement>(null);
+  const { setSlug } = useHighlight();
 
   useEffect(() => {
     function onPointerDown(e: PointerEvent) {
@@ -152,7 +154,12 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
           </thead>
           <tbody>
             {sorted.map((r) => (
-              <tr key={r.slug} className="border-b border-slate-100 last:border-0 hover:bg-slate-50">
+              <tr
+                key={r.slug}
+                className="border-b border-slate-100 last:border-0 hover:bg-slate-50"
+                onMouseEnter={() => setSlug(r.slug)}
+                onMouseLeave={() => setSlug(null)}
+              >
                 <td className="px-3 py-2">
                   <Link
                     href={r.ageParam === "all" ? `/county/${r.slug}` : `/county/${r.slug}?age=${r.ageParam}`}

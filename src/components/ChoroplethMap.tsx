@@ -4,6 +4,7 @@ import { geoMercator, geoPath } from "d3-geo";
 import { useRouter } from "next/navigation";
 import { useMemo, useRef, useState } from "react";
 import type { FeatureCollection } from "geojson";
+import { useHighlight } from "./HighlightContext";
 import il from "@/lib/il-counties.json";
 
 export interface MapItem {
@@ -34,6 +35,7 @@ export default function ChoroplethMap({ items, ageParam, legendTitle }: {
   const geo = il as unknown as FeatureCollection;
   const wrapRef = useRef<HTMLDivElement>(null);
   const [hover, setHover] = useState<{ item: MapItem; x: number; y: number } | null>(null);
+  const { slug: highlightSlug, setSlug } = useHighlight();
 
   const path = useMemo(() => {
     const projection = geoMercator().fitSize([WIDTH, HEIGHT], geo);
@@ -75,6 +77,7 @@ export default function ChoroplethMap({ items, ageParam, legendTitle }: {
                 fill={fill(item.value)}
                 stroke="#ffffff"
                 strokeWidth={0.6}
+                style={item.slug === highlightSlug ? { filter: "brightness(0.85)" } : undefined}
                 tabIndex={0}
                 role="link"
                 aria-label={`${item.name} County: ${item.display}. Open county page.`}
@@ -83,12 +86,27 @@ export default function ChoroplethMap({ items, ageParam, legendTitle }: {
                 onKeyDown={(e) => {
                   if (e.key === "Enter") router.push(ageParam === "all" ? `/county/${item.slug}` : `/county/${item.slug}?age=${ageParam}`);
                 }}
-                onMouseEnter={(e) => trackHover(item, e)}
-                onMouseMove={(e) => trackHover(item, e)}
-                onMouseLeave={() => setHover(null)}
+                onMouseEnter={(e) => {
+                  trackHover(item, e);
+                  setSlug(item.slug);
+                }}
+                onMouseMove={(e) => {
+                  trackHover(item, e);
+                  setSlug(item.slug);
+                }}
+                onMouseLeave={() => {
+                  setHover(null);
+                  setSlug(null);
+                }}
               />
             );
           })}
+          {highlightSlug && (() => {
+            const f = geo.features.find((ft) => byKey.get(key((ft.properties as { name: string }).name))?.slug === highlightSlug);
+            return f ? (
+              <path d={path(f) ?? undefined} fill="none" stroke="#0f172a" strokeWidth={1.75} pointerEvents="none" />
+            ) : null;
+          })()}
         </svg>
         {hover && (
           <div
