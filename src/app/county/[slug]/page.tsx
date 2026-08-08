@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import AgeCompatibilityChart from "@/components/AgeCompatibilityChart";
 import AgeFilter from "@/components/AgeFilter";
 import CampaignBrief from "@/components/CampaignBrief";
+import CountyMinimap from "@/components/CountyMinimap";
 import DiagnosticCard from "@/components/DiagnosticCard";
 import OutOfCountyPanel from "@/components/OutOfCountyPanel";
 import TrendsChart from "@/components/TrendsChart";
@@ -50,13 +51,18 @@ export default async function CountyPage({ params, searchParams }: {
       <nav className="no-print text-sm">
         <Link href="/" className="text-blue-700 hover:underline">← All counties</Link>
       </nav>
-      <section className="space-y-3">
-        <h1 className="text-2xl font-semibold">{county.name} County</h1>
-        <AgeFilter />
-        <p className="text-sm text-slate-600">
-          {childrenFor(county, sel).toLocaleString()} children in care ({label}) ·{" "}
-          {homesFor(county, sel).toLocaleString()} active licensed homes accepting these ages
-        </p>
+      <section className="flex items-start gap-8">
+        <div className="space-y-3">
+          <h1 className="text-2xl font-semibold">{county.name} County</h1>
+          <AgeFilter />
+          <p className="text-sm text-slate-600">
+            {childrenFor(county, sel).toLocaleString()} children in care ({label}) ·{" "}
+            {homesFor(county, sel).toLocaleString()} active licensed homes accepting these ages
+          </p>
+        </div>
+        <div className="hidden sm:block">
+          <CountyMinimap name={county.name} />
+        </div>
       </section>
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
         <div className="space-y-6">
@@ -79,6 +85,7 @@ export default async function CountyPage({ params, searchParams }: {
             ratePct={ooc === null ? "—" : `${(ooc * 100).toFixed(0)}%`}
             label={label}
             destinations={county.destinations}
+            ageParam={ageParamValue(sel)}
           />
         </div>
       </section>

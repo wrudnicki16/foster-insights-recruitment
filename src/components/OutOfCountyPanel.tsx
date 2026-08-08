@@ -1,10 +1,15 @@
+import Link from "next/link";
+
+const slug = (n: string) => n.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+
 interface Props {
   ratePct: string;
   label: string;
   destinations: { county: string; count: number }[];
+  ageParam: string;
 }
 
-export default function OutOfCountyPanel({ ratePct, label, destinations }: Props) {
+export default function OutOfCountyPanel({ ratePct, label, destinations, ageParam }: Props) {
   return (
     <div className="rounded-lg border border-slate-200 bg-white p-4">
       <h3 className="text-sm font-medium uppercase tracking-wide text-slate-500">
@@ -22,7 +27,12 @@ export default function OutOfCountyPanel({ ratePct, label, destinations }: Props
           <ul className="mt-1 space-y-0.5 text-sm text-slate-700">
             {destinations.map((d) => (
               <li key={d.county} className="flex justify-between">
-                <span>{d.county}</span>
+                <Link
+                  href={`/county/${slug(d.county)}${ageParam === "all" ? "" : `?age=${ageParam}`}`}
+                  className="text-blue-700 underline-offset-2 hover:underline"
+                >
+                  {d.county}
+                </Link>
                 <span className="tabular-nums text-slate-500">{d.count.toLocaleString()}</span>
               </li>
             ))}
