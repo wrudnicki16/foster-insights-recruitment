@@ -2,10 +2,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import AgeCompatibilityChart from "@/components/AgeCompatibilityChart";
 import AgeFilter from "@/components/AgeFilter";
+import CampaignBrief from "@/components/CampaignBrief";
 import DiagnosticCard from "@/components/DiagnosticCard";
 import OutOfCountyPanel from "@/components/OutOfCountyPanel";
 import TrendsChart from "@/components/TrendsChart";
 import { countyBySlug, getCounties, getMeta } from "@/lib/data";
+import { briefFor } from "@/lib/brief";
 import { ageParamValue, agesFor, parseAgeParam, selectionLabel } from "@/lib/selection";
 import { childrenFor, homesFor, oocRateFor } from "@/lib/stats";
 import { AGES } from "@/lib/types";
@@ -79,6 +81,9 @@ export default async function CountyPage({ params, searchParams }: {
             destinations={county.destinations}
           />
         </div>
+      </section>
+      <section>
+        <CampaignBrief brief={briefFor(county, counties, sel)} />
       </section>
     </div>
   );

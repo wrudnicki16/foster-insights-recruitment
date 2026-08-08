@@ -45,3 +45,4 @@ next-env.d.ts
 
 # counties data
 counties.txt
+.playwright-mcp/
