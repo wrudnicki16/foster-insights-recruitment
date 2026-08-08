@@ -2,7 +2,7 @@
 
 import { geoMercator, geoPath } from "d3-geo";
 import { useRouter } from "next/navigation";
-import { useMemo } from "react";
+import { useMemo, useRef, useState } from "react";
 import type { FeatureCollection } from "geojson";
 import il from "@/lib/il-counties.json";
 
@@ -32,6 +32,8 @@ export default function ChoroplethMap({ items, ageParam, legendTitle }: {
 }) {
   const router = useRouter();
   const geo = il as unknown as FeatureCollection;
+  const wrapRef = useRef<HTMLDivElement>(null);
+  const [hover, setHover] = useState<{ item: MapItem; x: number; y: number } | null>(null);
 
   const path = useMemo(() => {
     const projection = geoMercator().fitSize([WIDTH, HEIGHT], geo);
@@ -53,34 +55,51 @@ export default function ChoroplethMap({ items, ageParam, legendTitle }: {
     return PALETTE[bucket];
   }
 
+  function trackHover(item: MapItem, e: { clientX: number; clientY: number }) {
+    const rect = wrapRef.current?.getBoundingClientRect();
+    setHover({ item, x: e.clientX - (rect?.left ?? 0) + 12, y: e.clientY - (rect?.top ?? 0) + 12 });
+  }
+
   return (
     <figure>
-      <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="h-auto w-full max-w-md" role="group"
-        aria-label={`Illinois county map shaded by ${legendTitle}`}>
-        {geo.features.map((f) => {
-          const item = byKey.get(key((f.properties as { name: string }).name));
-          if (!item) return null;
-          return (
-            <path
-              key={item.slug}
-              d={path(f) ?? undefined}
-              fill={fill(item.value)}
-              stroke="#ffffff"
-              strokeWidth={0.6}
-              tabIndex={0}
-              role="link"
-              aria-label={`${item.name} County: ${item.display}. Open county page.`}
-              className="cursor-pointer outline-offset-2 hover:opacity-80 focus:outline focus:outline-2 focus:outline-slate-800"
-              onClick={() => router.push(ageParam === "all" ? `/county/${item.slug}` : `/county/${item.slug}?age=${ageParam}`)}
-              onKeyDown={(e) => {
-                if (e.key === "Enter") router.push(ageParam === "all" ? `/county/${item.slug}` : `/county/${item.slug}?age=${ageParam}`);
-              }}
-            >
-              <title>{`${item.name}: ${item.display}`}</title>
-            </path>
-          );
-        })}
-      </svg>
+      <div ref={wrapRef} className="relative">
+        <svg viewBox={`0 0 ${WIDTH} ${HEIGHT}`} className="h-auto w-full max-w-md" role="group"
+          aria-label={`Illinois county map shaded by ${legendTitle}`}>
+          {geo.features.map((f) => {
+            const item = byKey.get(key((f.properties as { name: string }).name));
+            if (!item) return null;
+            return (
+              <path
+                key={item.slug}
+                d={path(f) ?? undefined}
+                fill={fill(item.value)}
+                stroke="#ffffff"
+                strokeWidth={0.6}
+                tabIndex={0}
+                role="link"
+                aria-label={`${item.name} County: ${item.display}. Open county page.`}
+                className="cursor-pointer outline-offset-2 hover:opacity-80 focus:outline focus:outline-2 focus:outline-slate-800"
+                onClick={() => router.push(ageParam === "all" ? `/county/${item.slug}` : `/county/${item.slug}?age=${ageParam}`)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") router.push(ageParam === "all" ? `/county/${item.slug}` : `/county/${item.slug}?age=${ageParam}`);
+                }}
+                onMouseEnter={(e) => trackHover(item, e)}
+                onMouseMove={(e) => trackHover(item, e)}
+                onMouseLeave={() => setHover(null)}
+              />
+            );
+          })}
+        </svg>
+        {hover && (
+          <div
+            className="pointer-events-none absolute z-10 max-w-[220px] rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-md"
+            style={{ left: hover.x, top: hover.y }}
+          >
+            <span className="font-semibold text-slate-900">{hover.item.name}</span>
+            <span className="block text-slate-600">{hover.item.display}</span>
+          </div>
+        )}
+      </div>
       <figcaption className="mt-2 flex flex-wrap items-center gap-3 text-xs text-slate-600">
         <span className="font-medium">{legendTitle}</span>
         <span className="flex items-center gap-1">
