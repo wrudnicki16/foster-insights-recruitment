@@ -3,9 +3,9 @@ import ChoroplethMap, { MapItem } from "@/components/ChoroplethMap";
 import CountyTable, { TableRow } from "@/components/CountyTable";
 import SummaryStrip from "@/components/SummaryStrip";
 import { getCounties, getStatewide } from "@/lib/data";
-import { ageParamValue, parseAgeParam, selectionLabel } from "@/lib/selection";
+import { agesFor, ageParamValue, parseAgeParam, selectionLabel } from "@/lib/selection";
 import { childrenFor, homesFor, oocRateFor, pressureFor, pressureSortValue } from "@/lib/stats";
-import { reasonFor } from "@/lib/verdict";
+import { reasonFor, reasonKindsFor } from "@/lib/verdict";
 
 export default async function Home({ searchParams }: { searchParams: Promise<{ age?: string }> }) {
   const { age } = await searchParams;
@@ -29,11 +29,26 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
       ooc: ooc === null ? "—" : `${(ooc * 100).toFixed(0)}%`,
       oocSort: ooc ?? -1,
       reason: reasonFor(c, counties, sel),
+      reasons: reasonKindsFor(c, counties, sel),
       ageParam: ageParamValue(sel),
     };
   });
 
-  const swOoc = statewide.oocTotalAll === 0 ? "—" : `${((statewide.oocOutAll / statewide.oocTotalAll) * 100).toFixed(0)}%`;
+  const ages = agesFor(sel);
+  const { out: swOut, total: swTotal } =
+    sel.kind === "all"
+      ? { out: statewide.oocOutAll, total: statewide.oocTotalAll }
+      : counties.reduce(
+          (acc, c) => {
+            for (const a of ages) {
+              acc.out += c.oocOutByAge[a];
+              acc.total += c.oocTotalByAge[a];
+            }
+            return acc;
+          },
+          { out: 0, total: 0 },
+        );
+  const swOoc = swTotal === 0 ? "—" : `${((swOut / swTotal) * 100).toFixed(0)}%`;
 
   const mapItems: MapItem[] = counties.map((c) => {
     const p = pressureFor(c, sel);
@@ -61,19 +76,14 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
         />
       </section>
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-[auto_1fr]">
-        <ChoroplethMap
-          items={mapItems}
-          ageParam={ageParamValue(sel)}
-          legendTitle={`Children per age-compatible home (${selectionLabel(sel).toLowerCase()})`}
-        />
-        <div className="space-y-2">
-          <h2 className="text-lg font-semibold">County recruitment priorities</h2>
-          <p className="text-sm text-slate-500">
-            Ranked by children in care per age-compatible active home. Click a county for details
-            and a recruitment brief.
-          </p>
-          <CountyTable rows={rows} />
+        <div className="self-start lg:sticky lg:top-6">
+          <ChoroplethMap
+            items={mapItems}
+            ageParam={ageParamValue(sel)}
+            legendTitle={`Children per age-compatible home (${selectionLabel(sel).toLowerCase()})`}
+          />
         </div>
+        <CountyTable rows={rows} />
       </section>
     </div>
   );

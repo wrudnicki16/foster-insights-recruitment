@@ -1,6 +1,6 @@
 import { describe, expect, test } from "vitest";
 import { county } from "./stats.test";
-import { reasonFor, verdictFor } from "./verdict";
+import { reasonFor, reasonKindsFor, verdictFor } from "./verdict";
 
 // Build a statewide field of 10 identical baseline counties, then perturb one.
 // Baseline: 20 children / 10 homes = pressure 2.0; activity 40%.
@@ -50,5 +50,18 @@ describe("reasonFor", () => {
   });
   test("nothing elevated produces the neutral line", () => {
     expect(reasonFor(county({}), [...baseline], ALL)).toMatch(/No standout signal/);
+  });
+});
+
+describe("reasonKindsFor", () => {
+  test("elevated signals produce specific kinds", () => {
+    const c = county({ childrenByAge: Array(18).fill(3), oocOutAll: 79, activeDays: 10 });
+    const kinds = reasonKindsFor(c, [...baseline, c], ALL);
+    expect(kinds).toContain("high_pressure");
+    expect(kinds).toContain("high_ooc");
+    expect(kinds).toContain("low_activity");
+  });
+  test("nothing elevated produces an empty list", () => {
+    expect(reasonKindsFor(county({}), [...baseline], ALL)).toEqual([]);
   });
 });

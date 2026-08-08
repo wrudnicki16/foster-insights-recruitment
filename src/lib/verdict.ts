@@ -80,28 +80,42 @@ export function verdictFor(c: CountyData, all: CountyData[], sel: AgeSelection):
   };
 }
 
-export function reasonFor(c: CountyData, all: CountyData[], sel: AgeSelection): string {
-  const parts: string[] = [];
+export type ReasonKind = "no_homes" | "high_pressure" | "high_ooc" | "low_activity";
+
+export function reasonKindsFor(c: CountyData, all: CountyData[], sel: AgeSelection): ReasonKind[] {
+  const kinds: ReasonKind[] = [];
 
   const values = all.map((x) => pressureSortValue(pressureFor(x, sel)));
   const p75 = quantile(values.filter(Number.isFinite), 0.75);
   const own = pressureSortValue(pressureFor(c, sel));
-  if (own === Infinity) parts.push("no age-compatible active homes");
-  else if (own > p75 && own > 0) parts.push("children per age-compatible home among the highest in the state");
+  if (own === Infinity) kinds.push("no_homes");
+  else if (own > p75 && own > 0) kinds.push("high_pressure");
 
   const oocValues = all.map((x) => oocRateFor(x, sel)).filter((r): r is number => r !== null);
   const ooc = oocRateFor(c, sel);
   if (ooc !== null && oocValues.length > 0 && ooc > quantile(oocValues, 0.75)) {
-    parts.push("high share of foster placements outside the county");
+    kinds.push("high_ooc");
   }
 
   const activities = all.map(activityRateFor).filter((a): a is number => a !== null);
   const act = activityRateFor(c);
   if (act !== null && activities.length > 0 && act < quantile(activities, 0.25)) {
-    parts.push("licensed homes are often inactive");
+    kinds.push("low_activity");
   }
 
-  if (parts.length === 0) return "No standout signal for this age selection.";
-  const joined = parts.join("; ");
+  return kinds;
+}
+
+const REASON_SENTENCES: Record<ReasonKind, string> = {
+  no_homes: "no age-compatible active homes",
+  high_pressure: "children per age-compatible home among the highest in the state",
+  high_ooc: "high share of foster placements outside the county",
+  low_activity: "licensed homes are often inactive",
+};
+
+export function reasonFor(c: CountyData, all: CountyData[], sel: AgeSelection): string {
+  const kinds = reasonKindsFor(c, all, sel);
+  if (kinds.length === 0) return "No standout signal for this age selection.";
+  const joined = kinds.map((k) => REASON_SENTENCES[k]).join("; ");
   return joined + ".";
 }
