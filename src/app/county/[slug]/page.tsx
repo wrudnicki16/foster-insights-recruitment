@@ -61,7 +61,10 @@ export default async function CountyPage({ params, searchParams }: {
           </p>
         </div>
         <div className="hidden sm:block">
-          <CountyMinimap name={county.name} />
+          <CountyMinimap
+            highlightNames={[county.name]}
+            ariaLabel={`Location of ${county.name} County in Illinois`}
+          />
         </div>
       </section>
       <section className="grid grid-cols-1 gap-6 lg:grid-cols-2">
@@ -86,6 +89,7 @@ export default async function CountyPage({ params, searchParams }: {
             label={label}
             destinations={county.destinations}
             ageParam={ageParamValue(sel)}
+            countyName={county.name}
           />
         </div>
       </section>
