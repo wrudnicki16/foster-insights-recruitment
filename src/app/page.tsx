@@ -78,7 +78,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
       </section>
       <HighlightProvider>
         <section className="grid grid-cols-1 gap-6 lg:grid-cols-[auto_1fr]">
-          <div className="self-start lg:sticky lg:top-6">
+          <div className="self-start lg:sticky lg:top-6 lg:z-30">
             <ChoroplethMap
               items={mapItems}
               ageParam={ageParamValue(sel)}

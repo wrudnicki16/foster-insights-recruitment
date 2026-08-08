@@ -110,7 +110,7 @@ export default function ChoroplethMap({ items, ageParam, legendTitle }: {
         </svg>
         {hover && (
           <div
-            className="pointer-events-none absolute z-10 w-max max-w-[220px] rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-md"
+            className="pointer-events-none absolute z-30 w-max max-w-[220px] rounded-md border border-slate-200 bg-white px-2.5 py-1.5 text-xs shadow-md"
             style={{ left: hover.x, top: hover.y }}
           >
             <span className="font-semibold text-slate-900">{hover.item.name}</span>
