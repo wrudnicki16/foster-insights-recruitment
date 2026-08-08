@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { ReasonKind } from "@/lib/verdict";
 
 export interface TableRow {
@@ -40,6 +40,16 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
   const [sortKey, setSortKey] = useState<SortKey>("pressureSort");
   const [desc, setDesc] = useState(true);
   const [filters, setFilters] = useState<Set<string>>(new Set());
+  const filterRef = useRef<HTMLDetailsElement>(null);
+
+  useEffect(() => {
+    function onPointerDown(e: PointerEvent) {
+      const d = filterRef.current;
+      if (d?.open && e.target instanceof Node && !d.contains(e.target)) d.open = false;
+    }
+    document.addEventListener("pointerdown", onPointerDown);
+    return () => document.removeEventListener("pointerdown", onPointerDown);
+  }, []);
 
   const filtered =
     filters.size === 0
@@ -75,7 +85,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
     <div className="space-y-2">
       <div className="flex items-center justify-between gap-4">
         <h2 className="text-lg font-semibold">County recruitment priorities</h2>
-        <details className="relative">
+        <details className="relative" ref={filterRef}>
           <summary
             aria-label="Filter counties by reason"
             className="flex list-none items-center gap-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 [&::-webkit-details-marker]:hidden"
@@ -83,7 +93,6 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
             <svg viewBox="0 0 16 16" className="h-4 w-4">
               <path d="M1 2h14L10 8v5l-4 2V8L1 2z" fill="currentColor" />
             </svg>
-            Filter
             {filters.size > 0 ? <span className="text-slate-500">·{filters.size}</span> : null}
           </summary>
           <div className="absolute right-0 z-20 mt-2 w-64 rounded-md border border-slate-200 bg-white p-3 shadow-lg">
