@@ -4,7 +4,7 @@ import {
   CartesianGrid, Legend, Line, LineChart, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 
-export default function TrendsChart({ data }: { data: { month: string; licenses: number; removals: number }[] }) {
+export default function TrendsChart({ data }: { data: { month: string; licenses: number; removals: number | null }[] }) {
   return (
     <div>
       <ResponsiveContainer width="100%" height={220}>
@@ -19,7 +19,9 @@ export default function TrendsChart({ data }: { data: { month: string; licenses:
         </LineChart>
       </ResponsiveContainer>
       <p className="mt-1 text-xs text-slate-500">
-        Monthly newly licensed homes vs. children removed into care, Jan 2022 – Jun 2026.
+        Monthly newly licensed homes vs. children removed into care, Jan 2022 – Jun 2026. January
+        2022 is excluded from removals: children already in care when the data window opens carry
+        that removal date, so the month reflects the standing population rather than new removals.
       </p>
     </div>
   );

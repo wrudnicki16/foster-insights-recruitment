@@ -40,7 +40,7 @@ export default async function CountyPage({ params, searchParams }: {
   const trendData = meta.months.map((month) => ({
     month,
     licenses: county.newLicensesByMonth[month] ?? 0,
-    removals: county.removalsByMonth[month] ?? 0,
+    removals: month === "2022-01" ? null : county.removalsByMonth[month] ?? 0,
   }));
 
   const ooc = oocRateFor(county, sel);

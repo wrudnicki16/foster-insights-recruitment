@@ -2,7 +2,7 @@
 
 import { usePathname, useRouter } from "next/navigation";
 import {
-  Bar, CartesianGrid, ComposedChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis,
+  Bar, CartesianGrid, Cell, ComposedChart, Legend, ResponsiveContainer, Tooltip, XAxis, YAxis,
 } from "recharts";
 
 interface Props {
@@ -14,7 +14,6 @@ interface Props {
 export default function AgeCompatibilityChart({ data, highlightAges, ageParam }: Props) {
   const router = useRouter();
   const pathname = usePathname();
-  const highlightAll = highlightAges.length === 18;
 
   return (
     <div>
@@ -32,18 +31,24 @@ export default function AgeCompatibilityChart({ data, highlightAges, ageParam }:
             name="Children in care"
             dataKey="children"
             fill="#1d4ed8"
-            fillOpacity={highlightAll ? 1 : 0.35}
             onClick={(_, index) => router.push(`${pathname}?age=${data[index].age}`)}
             className="cursor-pointer"
-          />
+          >
+            {data.map((d) => (
+              <Cell key={d.age} fillOpacity={highlightAges.includes(d.age) ? 1 : 0.35} />
+            ))}
+          </Bar>
           <Bar
             name="Homes accepting this age"
             dataKey="homes"
             fill="#f59e0b"
-            fillOpacity={highlightAll ? 1 : 0.35}
             onClick={(_, index) => router.push(`${pathname}?age=${data[index].age}`)}
             className="cursor-pointer"
-          />
+          >
+            {data.map((d) => (
+              <Cell key={d.age} fillOpacity={highlightAges.includes(d.age) ? 1 : 0.35} />
+            ))}
+          </Bar>
         </ComposedChart>
       </ResponsiveContainer>
       <p className="mt-1 text-xs text-slate-500">
