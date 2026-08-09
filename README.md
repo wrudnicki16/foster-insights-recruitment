@@ -3,7 +3,7 @@
 A dashboard for Illinois DCFS staff answering two questions: **where should we recruit
 foster homes, and for which ages?** Built for the Foster Insights full-stack task.
 
-**Live site:** <VERCEL_URL — filled in at deploy>
+**Live site:** https://foster-insights-recruitment.vercel.app
 
 ## What it shows
 
