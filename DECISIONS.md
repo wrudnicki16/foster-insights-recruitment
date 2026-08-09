@@ -49,8 +49,14 @@ Product and technical decisions, in the order they were made.
 15. **"Vermillion" → "Vermilion".** Illinois has 102 counties; the 103rd spelling is
     normalized so the map join and county pages are correct. Documented as
     normalization, not data cleaning.
-16. **Six children with unrecorded ages** are included in all-ages totals and excluded
-    from age-specific views, with a footnote in the UI.
+16. **Six children in the extract have no recorded age**; the two currently in care
+    are included in all-ages totals and excluded from age-specific views, with a
+    footnote in the UI.
+16a. **The licensing trend is caveated as likely survivorship-biased.** No provider in
+    the extract has zero active days, despite the data dictionary including homes
+    regardless of placements — never-used (often recently licensed) homes appear to be
+    absent, so the chart footnote warns against reading the late-window decline in new
+    licenses as a licensing trend.
 
 ## Technical
 

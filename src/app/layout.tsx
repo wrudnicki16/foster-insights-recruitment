@@ -35,9 +35,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </header>
         <main className="mx-auto max-w-6xl px-4 py-6">{children}</main>
         <footer className="no-print mx-auto max-w-6xl px-4 pb-8 text-xs text-slate-400">
-          Counts reflect age compatibility of licensed homes, not current vacancies. Six children with
-          unrecorded ages are included in all-ages totals only. County name “Vermillion” in the source
-          data is normalized to Vermilion.
+          Counts reflect age compatibility of licensed homes, not current vacancies. Six children in
+          the source data have no recorded age; the two currently in care are included in all-ages
+          totals only. County name “Vermillion” in the source data is normalized to Vermilion.
         </footer>
       </body>
     </html>

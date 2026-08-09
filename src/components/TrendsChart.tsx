@@ -22,6 +22,8 @@ export default function TrendsChart({ data }: { data: { month: string; licenses:
         Monthly newly licensed homes vs. children removed into care, Jan 2022 – Jun 2026. January
         2022 is excluded from removals: children already in care when the data window opens carry
         that removal date, so the month reflects the standing population rather than new removals.
+        Newly licensed homes that have not yet taken a placement may be under-represented in the
+        source extract, which can overstate the recent decline in new licenses.
       </p>
     </div>
   );
