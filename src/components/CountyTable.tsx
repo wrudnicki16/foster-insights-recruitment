@@ -143,13 +143,13 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
         </details>
         <button
           onClick={downloadCsv}
+          title="Download CSV"
           aria-label="Download current view as CSV"
-          className="no-print flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+          className="no-print flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50"
         >
-          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">
+          <svg viewBox="0 0 16 16" className="h-4 w-4" aria-hidden="true">
             <path d="M8 1v8m0 0L5 6m3 3l3-3M2 12v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
           </svg>
-          CSV
         </button>
       </div>
       <p className="text-sm text-slate-500">
