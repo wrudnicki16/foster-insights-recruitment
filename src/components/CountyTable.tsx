@@ -84,7 +84,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
   }
 
   function downloadCsv() {
-    const header = ["County", "Children in care", "Homes accepting", "Children per home", "Out-of-county rate", "Why"];
+    const header = ["County", "Children in care", "Homes accepting", "Children per home", "Out-of-county rate", "Key signals"];
     const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
     const body = sorted.map((r) =>
       [r.name, String(r.children), String(r.homes), r.pressureDisplay, r.ooc, r.reason],
@@ -107,7 +107,8 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
         <h2 className="text-lg font-semibold">County recruitment priorities</h2>
         <details className="relative" ref={filterRef}>
           <summary
-            aria-label="Filter counties by reason"
+            title="Filter by signal"
+            aria-label="Filter counties by signal"
             className="flex list-none items-center gap-1 rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-700 hover:bg-slate-50 [&::-webkit-details-marker]:hidden"
           >
             <svg viewBox="0 0 16 16" className="h-4 w-4">
@@ -117,7 +118,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
           </summary>
           <div className="absolute left-0 z-20 mt-2 w-64 rounded-md border border-slate-200 bg-white p-3 shadow-lg">
             <div className="flex items-center justify-between pb-2">
-              <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Why</span>
+              <span className="text-xs font-semibold uppercase tracking-wide text-slate-500">Key signals</span>
               <button
                 type="button"
                 onClick={() => setFilters(new Set())}
@@ -177,7 +178,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
                   </button>
                 </th>
               ))}
-              <th className="px-3 py-2 lg:sticky lg:top-10 lg:z-10 bg-white shadow-[0_1px_0_0_#e2e8f0] font-semibold text-slate-700">Why</th>
+              <th className="px-3 py-2 lg:sticky lg:top-10 lg:z-10 bg-white shadow-[0_1px_0_0_#e2e8f0] font-semibold text-slate-700">Key signals</th>
             </tr>
           </thead>
           <tbody>
