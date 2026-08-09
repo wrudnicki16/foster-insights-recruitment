@@ -83,6 +83,24 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
     });
   }
 
+  function downloadCsv() {
+    const header = ["County", "Children in care", "Homes accepting", "Children per home", "Out-of-county rate", "Why"];
+    const esc = (v: string) => `"${v.replace(/"/g, '""')}"`;
+    const body = sorted.map((r) =>
+      [r.name, String(r.children), String(r.homes), r.pressureDisplay, r.ooc, r.reason],
+    );
+    const csv = "﻿" + [header, ...body].map((row) => row.map(esc).join(",")).join("\r\n");
+    const blob = new Blob([csv], { type: "text/csv;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    const age = rows[0]?.ageParam ?? "all";
+    const agePart = age === "all" ? "all-ages" : `ages-${age}`;
+    a.href = url;
+    a.download = `county-recruitment-priorities_${agePart}${filters.size > 0 ? "_filtered" : ""}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+  }
+
   return (
     <div className="space-y-2">
       <div className="flex h-10 items-center gap-2 lg:sticky lg:top-0 lg:z-20 lg:bg-slate-50">
@@ -123,6 +141,16 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
             </div>
           </div>
         </details>
+        <button
+          onClick={downloadCsv}
+          aria-label="Download current view as CSV"
+          className="no-print flex items-center gap-1.5 rounded-md border border-slate-300 bg-white px-2.5 py-1.5 text-xs font-medium text-slate-700 hover:bg-slate-50"
+        >
+          <svg viewBox="0 0 16 16" className="h-3.5 w-3.5" aria-hidden="true">
+            <path d="M8 1v8m0 0L5 6m3 3l3-3M2 12v2a1 1 0 001 1h10a1 1 0 001-1v-2" stroke="currentColor" strokeWidth="1.5" fill="none" strokeLinecap="round" strokeLinejoin="round" />
+          </svg>
+          CSV
+        </button>
       </div>
       <p className="text-sm text-slate-500">
         Ranked by children in care per age-compatible active home. Click a county for details and a
