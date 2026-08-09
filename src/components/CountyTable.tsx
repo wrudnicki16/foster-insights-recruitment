@@ -201,7 +201,16 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
                 <td className="px-3 py-2 text-center tabular-nums">{r.homes.toLocaleString("en-US")}</td>
                 <td className="px-3 py-2 text-center tabular-nums">{r.pressureDisplay}</td>
                 <td className="px-3 py-2 text-center tabular-nums">{r.ooc}</td>
-                <td className="px-3 py-2 text-slate-600">{r.reason}</td>
+                <td className="px-3 py-2 text-slate-600">
+                  {r.reason
+                    .replace(/\.$/, "")
+                    .split("; ")
+                    .map((part) => (
+                      <span key={part} className="block">
+                        {part}
+                      </span>
+                    ))}
+                </td>
               </tr>
             ))}
           </tbody>
