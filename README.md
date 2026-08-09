@@ -7,9 +7,12 @@ foster homes, and for which ages?** Built for the Foster Insights full-stack tas
 
 ## What it shows
 
-- **Statewide view** — an Illinois county map and ranked table showing recruitment
-  pressure (children in care per age-compatible licensed home), filterable by age
-  band or exact age, with a plain-language reason per county, a category filter over those reasons, and table-to-map hover highlighting.
+- **Statewide view** — a top-gaps strip naming the five most under-served
+  county × age-band combinations (each card links to that county pre-filtered),
+  above an Illinois county map and ranked table showing recruitment pressure
+  (children in care per age-compatible licensed home), filterable by age band or
+  exact age, with a plain-language reason per county, a category filter over those
+  reasons, and table-to-map hover highlighting.
 - **County view** — age-by-age compatibility chart, a comparative
   recruit-vs-reactivate diagnostic, out-of-county placement pressure, licensing/removal
   trends, and a copyable recruitment campaign brief.

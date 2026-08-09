@@ -3,7 +3,9 @@ import ChoroplethMap, { MapItem } from "@/components/ChoroplethMap";
 import CountyTable, { TableRow } from "@/components/CountyTable";
 import { HighlightProvider } from "@/components/HighlightContext";
 import SummaryStrip from "@/components/SummaryStrip";
+import TopGaps from "@/components/TopGaps";
 import { getCounties, getStatewide } from "@/lib/data";
+import { topGaps } from "@/lib/gaps";
 import { agesFor, ageParamValue, parseAgeParam, selectionLabel } from "@/lib/selection";
 import { childrenFor, homesFor, oocRateFor, pressureFor, pressureSortValue } from "@/lib/stats";
 import { reasonFor, reasonKindsFor } from "@/lib/verdict";
@@ -68,6 +70,7 @@ export default async function Home({ searchParams }: { searchParams: Promise<{ a
     <div className="space-y-6">
       <section className="space-y-3">
         <h1 className="text-2xl font-semibold">Where should we recruit, and for whom?</h1>
+        <TopGaps gaps={topGaps(counties)} />
         <AgeFilter />
         <SummaryStrip
           childCount={childrenFor(statewide, sel)}

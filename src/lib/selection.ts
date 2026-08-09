@@ -1,6 +1,6 @@
 import { AGES, AgeSelection, Band } from "./types";
 
-const BAND_VALUES: Band[] = ["0-5", "6-12", "13-17"];
+export const BAND_VALUES: Band[] = ["0-5", "6-12", "13-17"];
 
 const BAND_RANGES: Record<Band, [number, number]> = {
   "0-5": [0, 5],

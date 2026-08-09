@@ -95,3 +95,12 @@ Product and technical decisions, in the order they were made.
     desktop; the map has an instant custom tooltip (native SVG titles are OS-delayed);
     hovering a table row highlights that county on the map; and a filter narrows the
     ranking by need category.
+27. **Top-gaps strip ranks county × band pressure relative to each band's statewide
+    median.** Raw ratios are not comparable across bands — the statewide 13–17
+    baseline (0.75 children per home) is nearly 3× the 0–5 baseline (0.28), so
+    ranking raw ratios would surface only teen gaps. Each county appears at most
+    once (its worst band), a county-band with children but zero compatible homes
+    would pin to the top (none exists in this extract, but the case is handled and
+    tested), and the strip sits above the age filter because it deliberately
+    ignores the selection — scanning every band is its job. Cards deep-link to the
+    county page with that band pre-selected.
