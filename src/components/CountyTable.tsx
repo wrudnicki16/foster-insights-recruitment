@@ -178,7 +178,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
                   </button>
                 </th>
               ))}
-              <th className="px-3 py-2 lg:sticky lg:top-10 lg:z-10 bg-white shadow-[0_1px_0_0_#e2e8f0] font-semibold text-slate-700">Key signals</th>
+              <th className="min-w-[280px] px-3 py-2 lg:sticky lg:top-10 lg:z-10 bg-white shadow-[0_1px_0_0_#e2e8f0] font-semibold text-slate-700">Key signals</th>
             </tr>
           </thead>
           <tbody>
@@ -201,7 +201,7 @@ export default function CountyTable({ rows }: { rows: TableRow[] }) {
                 <td className="px-3 py-2 text-center tabular-nums">{r.homes.toLocaleString("en-US")}</td>
                 <td className="px-3 py-2 text-center tabular-nums">{r.pressureDisplay}</td>
                 <td className="px-3 py-2 text-center tabular-nums">{r.ooc}</td>
-                <td className="px-3 py-2 text-slate-600">
+                <td className="px-3 py-2 text-xs leading-snug text-slate-500">
                   {r.reason
                     .replace(/\.$/, "")
                     .split("; ")
